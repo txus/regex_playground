@@ -76,39 +76,33 @@ class State
     end
 
     if root
-      g.output( :png => "hey.png" )
-      system("open hey.png")
+      g.output( :png => "fsm.png" )
+      system("open fsm.png")
     else
       return node
     end
-  end
-
-  def to_node(g)
-    p "g.add_nodes(#{@id})"
-    g.add_nodes("#{@id}")
   end
 end
 
 class Transition < Struct.new(:value, :state); end
 
 class Compiler
-  def compile(string, parent=nil, value=nil)
-    root = State.new
+  def compile(string, parent=nil, value=nil, root=nil)
+    root ||= State.new
     peek = string[0]
     return root unless peek
-    puts "Scanning '#{peek.chr}'"
     case peek.chr
       when %r{[^\+\*\[\]\(\)]} # Alphanumeric or numbers
-        child = compile(string[1..-1], root, peek.chr)
+        child = State.new # 3
         root << Transition.new(peek.chr, child)
+
+        compile(string[1..-1], root, peek.chr, child)
       when /\+/
         raise "+ can only be applied after another symbol" unless parent && value
-        p "+: parent is #{parent.id}"
-        parent << Transition.new(value, parent)
+        root << Transition.new(value, root)
 
         if string[1]
-          child = compile(string[1..-1], root, string[1].chr)
-          root << Transition.new(peek.chr, child)
+          compile(string[1..-1], root, nil, root)
         end
     end
     root
@@ -169,28 +163,17 @@ describe Compiler do
 
   it 'compiles +' do
     root = subject.compile("abc+")
-    root.to_tree.must_equal "\n(1)\n  \\-a-> (2)\n         \\-b-> (3)\n                \\-c-> SELF\n                \\-c-> {4}"
+    root.to_tree.must_equal "\n(1)\n  \\-a-> (2)\n         \\-b-> (3)\n                \\-c-> (4)\n                       \\-c-> SELF"
   end
 
   it 'compiles interleaved +' do
     root = subject.compile("ab+c")
     puts root.to_tree
+    root.to_tree.must_equal "\n(1)\n  \\-a-> (2)\n         \\-b-> (3)\n                \\-b-> SELF\n                \\-c-> {4}"
   end
 
   it 'compiles big trees without complaining' do
-    root = subject.compile("abc+")
+    root = subject.compile("abb+8fhffd+b+")
     root.to_dot
-  end if nil
-
-  it 'rocks' do
-    g = GraphViz.new(:G)
-    n = g.add_nodes("Hey")
-    n2 = g.add_nodes("Ho")
-    n3 = g.add_nodes("Baz")
-    g.add_edges(n2, n3)
-    g.add_edges(n, n2)
-    g.add_edges(n2, n)
-    g.output( :png => "hey.png" )
-    system("open hey.png")
-  end if nil
+  end
 end
