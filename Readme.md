@@ -32,6 +32,12 @@ So as an example, the following regexen can be compiled:
 
 It's hacky just yet, very WIP.
 
+## Examples
+
+GraphViz example for the regex `ab+c`:
+
+![ab+c](http://f.cl.ly/items/2n1N3A2u3V1C1Q0O3a2K/fsm.png "ab+c")
+
 ## Who's talking?
 
 This was made by [Josep M. Bach (Txus)](http://txustice.me) under the MIT
