@@ -1,2 +1,2 @@
-gem 'ruby-graphviz'
-gem 'minitest'
+gemspec
+gem 'ruby-graphviz', :require => 'graphviz'

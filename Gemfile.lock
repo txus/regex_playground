@@ -1,6 +1,7 @@
 GEM
   specs:
     minitest (2.9.1)
+    rake (0.8.7)
     ruby-graphviz (1.0.3)
 
 PLATFORMS
@@ -8,4 +9,5 @@ PLATFORMS
 
 DEPENDENCIES
   minitest
+  rake
   ruby-graphviz
