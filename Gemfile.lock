@@ -1,0 +1,11 @@
+GEM
+  specs:
+    minitest (2.9.1)
+    ruby-graphviz (1.0.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  minitest
+  ruby-graphviz
